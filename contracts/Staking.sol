@@ -54,6 +54,12 @@ contract Staking is DegenToken {
         yield = daysQuotient * stakedAmount;
     }
 
+    function showCalculatedAPY() external view returns (uint apy) {
+        StakeData storage userStake = stakes[msg.sender];
+        uint daysQuotient = userStake.noOfDays/userStake.yearLater;
+        apy = daysQuotient * userStake.stakedAmount;
+    }
+
     function checkContractBalance() external view returns (uint bal) {
         bal = address(this).balance;
     }
