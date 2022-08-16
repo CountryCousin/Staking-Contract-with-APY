@@ -13,6 +13,12 @@ contract Staking is DegenToken {
 
     mapping(address => StakeData) stakes;
 
+    address admin;
+
+    constructor() {
+        admin = msg.sender;
+    }
+
     function stake(uint _days) external payable {
         require(msg.value > 0, "You can't stake zero value");
         require(_days > 0, "staking period can't be less than 0 days");
@@ -50,5 +56,12 @@ contract Staking is DegenToken {
 
     function checkContractBalance() external view returns (uint bal) {
         bal = address(this).balance;
+    }
+
+    receive() external payable {}
+
+    function withFromContract(uint _amount) external {
+        require(msg.sender == admin, "not owner");
+        payable(admin).transfer(_amount);
     }
 }
