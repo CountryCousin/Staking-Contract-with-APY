@@ -12,7 +12,7 @@ contract DegenToken is ERC20, Ownable {
 
     constructor() ERC20("Degen Gas", "DEG") {}
 
-    function mint(uint _amount) public {
+    function mint(uint _amount) internal {
         _mint(msg.sender, _amount);
     }
 }
