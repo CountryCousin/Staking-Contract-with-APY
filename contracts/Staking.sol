@@ -15,14 +15,14 @@ contract Staking is DegenToken {
 
     function stake(uint _days) external payable {
         require(msg.value > 0, "You can't stake zero value");
-        require(_days > 7, "staking period can't be less than 7 days");
+        require(_days > 0, "staking period can't be less than 0 days");
 
         StakeData storage sData = stakes[msg.sender];
         sData.stakedAmount += msg.value;
         sData.noOfDays = block.timestamp + (_days * 1 days);
         sData.yearLater = block.timestamp + 365 days;
 
-        mint(msg.value * 10 ** 18);
+        mint(msg.value);
     }
 
     function withdraw() external {
@@ -30,6 +30,7 @@ contract Staking is DegenToken {
 
         require(block.timestamp > userStake.noOfDays, "staking period not reached");
         require(userStake.stakedAmount > 0, "you don't have a stake");
+        require(balanceOf(msg.sender) >= userStake.stakedAmount, "placeholder token not enough");
 
         uint calculatedYield = calculateYield(userStake.noOfDays, userStake.stakedAmount, userStake.yearLater);
 
@@ -38,11 +39,16 @@ contract Staking is DegenToken {
         stakes[msg.sender].stakedAmount = 0;
         stakes[msg.sender].noOfDays = 0;
 
+        _transfer(msg.sender, address(this), userStake.stakedAmount);
         payable(msg.sender).transfer(transferable);
     }
 
     function calculateYield(uint _days, uint stakedAmount, uint _yearLater) private pure returns (uint yield) {
         uint daysQuotient = _days/_yearLater;
         yield = daysQuotient * stakedAmount;
+    }
+
+    function checkContractBalance() external view returns (uint bal) {
+        bal = address(this).balance;
     }
 }
