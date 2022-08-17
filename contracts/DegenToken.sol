@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.1;
-
-import "@openzeppelin/token/ERC20/ERC20.sol";
-import "@openzeppelin/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DegenToken is ERC20, Ownable {
     uint public constant maxTotalSupply = 10000000 * 10 ** 18;
